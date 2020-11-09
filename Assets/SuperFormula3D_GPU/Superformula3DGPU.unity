@@ -152,7 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   computeShader_SF: {fileID: 7200000, guid: 72596bd1bf447484ea665b4ea716e986, type: 3}
   sf_mat: {fileID: 2100000, guid: 1aef3e95a12716a4a8035eab4673911e, type: 2}
-  sf_resolution: 500
+  sf_resolution: 200
   sf_scale: 1
   PI_loops: 1
   m1: 0
