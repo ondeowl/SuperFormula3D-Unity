@@ -152,6 +152,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   computeShader_SF: {fileID: 7200000, guid: 72596bd1bf447484ea665b4ea716e986, type: 3}
   sf_mat: {fileID: 2100000, guid: cc6c4a967eb93fc46b84c68b72a9cc7f, type: 2}
+  sf_mat_wireframe: {fileID: 2100000, guid: 587a0ed375e317d4b96e081dddc4f5c8, type: 2}
+  bDrawWireframe: 0
   sf_resolution: 200
   sf_scale: 1
   PI_loops: 1

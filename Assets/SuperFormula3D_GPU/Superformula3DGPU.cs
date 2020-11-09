@@ -45,6 +45,8 @@ public class Superformula3DGPU : MonoBehaviour
     [Header("SuperFormula")]
     [SerializeField] private ComputeShader computeShader_SF;
     public Material sf_mat;
+    public Material sf_mat_wireframe;
+    public bool bDrawWireframe = false;
     
     [Range(10, 500)]
     public int sf_resolution = 500;
@@ -117,9 +119,11 @@ public class Superformula3DGPU : MonoBehaviour
             bNeedsUpdate = true;
         #endif
     }
+
     void Update()
     {
         bnds.center = transform.position;
+        
         if(bInit)
         {
             if (sf_resolution != xPoints)
@@ -140,15 +144,25 @@ public class Superformula3DGPU : MonoBehaviour
             bNeedsUpdate = false;    
         }
          
-                
-        //Assign Buffers to material
-        sf_mat.SetBuffer("pointBuffer", meshPointsBuffer);
-        sf_mat.SetBuffer("trianglesBuffer", trianglesBuffer);
-        sf_mat.SetMatrix("TRSmatrix", this.transform.localToWorldMatrix);
-        
-        //Draw
-        Graphics.DrawProcedural(sf_mat, bnds, MeshTopology.Triangles, trianglesBuffer.count, 1, Camera.main, null, ShadowCastingMode.On, true );
-        //Graphics.DrawProceduralIndirect(sf_mat, bnds, MeshTopology.Triangles, buffwithArgs);
+        if(!bDrawWireframe)
+        {
+            //Assign Buffers to material
+            sf_mat.SetBuffer("pointBuffer", meshPointsBuffer);
+            sf_mat.SetBuffer("trianglesBuffer", trianglesBuffer);
+            sf_mat.SetMatrix("TRSmatrix", this.transform.localToWorldMatrix);    
+            //Draw triangles
+            Graphics.DrawProcedural(sf_mat, bnds, MeshTopology.Triangles, trianglesBuffer.count, 1, Camera.main, null, ShadowCastingMode.On, true );
+            //Graphics.DrawProceduralIndirect(sf_mat, bnds, MeshTopology.Triangles, buffwithArgs);
+        }
+        else
+        {
+            //Assign Buffers to material
+            sf_mat_wireframe.SetBuffer("pointBuffer", meshPointsBuffer);
+            sf_mat_wireframe.SetBuffer("trianglesBuffer", trianglesBuffer);
+            sf_mat_wireframe.SetMatrix("TRSmatrix", this.transform.localToWorldMatrix);    
+            //Draw wireframe
+            Graphics.DrawProcedural(sf_mat_wireframe, bnds, MeshTopology.Lines, trianglesBuffer.count, 1, Camera.main, null, ShadowCastingMode.On, true );
+        }        
     }
 
     private void OnDestroy()

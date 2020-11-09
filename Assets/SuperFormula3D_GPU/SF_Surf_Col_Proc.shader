@@ -1,17 +1,8 @@
-﻿Shader "Custom/pbrProcedural"
+﻿Shader "Custom/SuperFormulaSurfaceColor"
 {
     Properties
     {
         _Color ("Color", Color) = (1,1,1,1)
-        _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _NormalMap ("NormalMap", 2D) = "black" {}
-        _RoughnessMap ("RoughnessMap", 2D) = "black" {}
-        _OcclusionMap ("OcclusionMap", 2D) = "white"{} 
-        _DisplacementMap ("DisplacementMap", 2D) = "black" {}
-        _Smoothness ("Smoothness", Range(0,1)) = 0.5
-        _Metallic ("Metallic", Range(0,1)) = 0.0
-        _Displacement ("Displacement", Range(0,1)) = 0.5
-        _NormalStrength ("NormalPower", Range(0,1)) = 0.5 
     }
     SubShader
     {
@@ -39,11 +30,6 @@
         };
 
         sampler2D _MainTex;
-        sampler2D _NormalMap;
-        sampler2D _RoughnessMap;
-        sampler2D _OcclusionMap;
-        sampler2D _DisplacementMap;
-
         
         float _Tess;
         float _NormalStrength;
@@ -56,7 +42,6 @@
         struct Input
         {
             float2 uv_MainTex;
-            float2 uv_NormalMap;
             float4 col;
             float3 normal;
         };
@@ -111,9 +96,7 @@
                 float3 normal = mul(TRSmatrix, pointBuffer[positionIndex].normal);
                 float4 tangent = pointBuffer[positionIndex].tangent;
                 float2 uv = pointBuffer[positionIndex].uv;
-                float displacement = (tex2Dlod(_DisplacementMap, float4(2 * uv,0,0)).r) * _Displacement;
                 
-                position += (displacement * normal);
                 v.vertex = mul(TRSmatrix,float4(position,1.0));
                 v.normal = safeNormalize(normal);
                 v.texcoord = float4(uv,0,0);
@@ -130,12 +113,8 @@
             // Albedo comes from a texture tinted by color
             float4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             o.Albedo = c;
-            o.Emission = 0;
-            o.Smoothness = _Smoothness * (1 - tex2D(_RoughnessMap, IN.uv_MainTex));
-            o.Metallic = _Metallic;
-            o.Occlusion = tex2D (_OcclusionMap, IN.uv_MainTex);
-            
-            o.Normal = lerp( UnpackNormal(tex2D(_NormalMap, IN.uv_NormalMap)), fixed3(0,0,1), -_NormalStrength + 1);
+            o.Smoothness = _Smoothness;
+            o.Metallic = _Metallic;            
 
             // float3 normal = lerp(float3(0, 0, 1), pow(UnpackNormal(tex2D(_NormalMap,  IN.uv_NormalMap)),4), _NormalStrength);
             // o.Normal = normal; //lerp(IN.normal, UnpackNormal (tex2D (_NormalMap, IN.uv_NormalMap)), _NormalStrength);
