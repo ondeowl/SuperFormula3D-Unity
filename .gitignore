@@ -1,0 +1,61 @@
+# =============== #
+# Unity generated #
+# =============== #
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+/[Mm]emoryCaptures/
+
+
+
+
+# ========================#
+# 	Unity 	Generated     #
+# ========================#
+ExportedObj/
+[Oo]bj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.log
+.vscode
+.Library
+
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DSStore?
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# ============ #
+# OtherAssets #
+# ============ #
+/Assets/MidiJack/*
+/[Aa]ssets/textures/*
+/[Aa]ssets/[Ss]uperFormula_DEV/*
+/[Tt]est[Bb]uild/*
+# Asset meta data should only be ignored when the corresponding asset is also ignored 
+/[Aa]ssets/**/*.meta
+
+
+*.wav
+*.WAV
+*.mp4
+*.mov
