@@ -1,6 +1,7 @@
 Superformula Mesh Generator Unity
 
 Fast real-time reconstruction of a 3D mesh from Superformula in Unity.
+
 https://en.wikipedia.org/wiki/Superformula
 http://paulbourke.net/geometry/supershape/
 
