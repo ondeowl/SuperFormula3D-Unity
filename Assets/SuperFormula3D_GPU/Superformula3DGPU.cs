@@ -333,68 +333,8 @@ public class Superformula3DGPU : MonoBehaviour
         computeShader_SF.SetFloat(Shader.PropertyToID("b1"), b1);
         computeShader_SF.SetFloat(Shader.PropertyToID("b2"), b2);
     }
-    public void setM1(string stringV)
-    {
-        m1 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setM2(string stringV)
-    {
-        m2 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN11(string stringV)
-    {
-        n11 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN12(string stringV)
-    {
-        n12 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN21(string stringV)
-    {
-        n21 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN22(string stringV)
-    {
-        n22 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN31(string stringV)
-    {
-        n31 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setN32(string stringV)
-    {
-        n32 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setA1(string stringV)
-    {
-        a1 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setB1(string stringV)
-    {
-        b1 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setA2(string stringV)
-    {
-        a2 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
-    public void setB2(string stringV)
-    {
-        b2 = float.Parse(stringV);
-        bNeedsUpdate = true;
-    }
 
-    public void setNeedsUpdate(bool bUpd = true)
+    public void SetNeedsUpdate(bool bUpd = true)
     {
         bNeedsUpdate = bUpd;
     }
