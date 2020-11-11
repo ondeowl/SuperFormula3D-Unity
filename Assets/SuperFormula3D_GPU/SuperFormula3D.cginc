@@ -76,7 +76,7 @@ float3 SuperFormula3D(uint i, uint j)
 	float theta = PI * (float(i) / (xPoints));
 	float r2 = CalculateSuperShapeRadius(sf_M_1, sf_N1_1, sf_N2_1, sf_N3_1, theta, a1, b1) ;
 	
-	float phi =  (2.0 * PI) * (float(j) / (yPoints-2));
+	float phi =  (2.0 * PI) * (float(j) / (yPoints-1));
 	float r1 = CalculateSuperShapeRadius(sf_M_2, sf_N1_2, sf_N2_2, sf_N3_2, phi, a2, b2) ;
 
 	//MAP TO SPHERE
@@ -89,42 +89,35 @@ float3 SuperFormula3D(uint i, uint j)
 }
 
 
-[numthreads(32,32,1)]
+[numthreads(1024,1,1)]
 void CalculateSuperFormula3D (uint3 id : SV_DispatchThreadID)
 {
-	//uint cID = id.x;
-	uint cID = (id.x + id.y * (yPoints));
+	//GET ID
+	uint cID = id.x;
+	
+	if(id.x > xPoints * yPoints) return;
 
-	uint i = uint(cID / (xPoints));
+	uint i = uint((float)cID / xPoints);
 	uint j = myModuloOp(cID, yPoints);
-	j = (yPoints-1) == j ? myModuloOp(cID-1, yPoints) : j;
-	// if(j == yPoints-1)
-	// {
-	// 	j = myModuloOp(cID-1, yPoints);
-	// }
-	if (cID == (xPoints*yPoints)) 
-	{
-		i = xPoints;
-		j = yPoints-1; 
-	}
 
 	float3 sfNewPos = SuperFormula3D(i, j);
 	meshVBuff[cID].pos = sfNewPos;
 
 	float3 d = sfNewPos;
-    float u = 1 - (0.5 + (atan2(d.z, -d.x) / (2 * PI * ((float)(yPoints) / yPoints)) ));
-    float v = 0.5 + (sin(d.y) / PI);
+    float u = (j >= yPoints-1) ? 1 : (1 - (0.5 + (atan2(d.z, -d.x) / (2 * PI) )));
+    float v = 0.5 + (sin(d.y) / PI );
 
 	meshVBuff[cID].uv = clamp(float2(u,v),0,1);
 	meshVBuff[cID].normalInt = int3(0,0,0); //reset normal and tangents for accumulation
 	meshVBuff[cID].tanInt1 = int3(0,0,0);
 	meshVBuff[cID].tanInt2 = int3(0,0,0);
 	
+	
 	//DEBUG BUFFER
 	//idBuff[cID] = float3(cID, i, j) ;
 }
 
-[numthreads(10,10,1)]
+[numthreads(16,4,1)]
 void ComputeFaceNormals (uint3 id : SV_DispatchThreadID)
 {
 	uint cID = id.x * 3;
@@ -142,6 +135,8 @@ void ComputeFaceNormals (uint3 id : SV_DispatchThreadID)
 	float3 e1 = v2 - v1;
 	float3 e2 = v3 - v1;
 	float3 norm  = cross( e1, e2 );
+
+	//norm = id.x == 10000 ? float3(0,1,0) : norm;
 	
 	//Float normals to int normals
 	int3 normI = (int3)(1000000 * norm);
@@ -192,21 +187,6 @@ void ComputeFaceNormals (uint3 id : SV_DispatchThreadID)
 	InterlockedAdd(meshVBuff[ic].tanInt2.x, tdir.x);
 	InterlockedAdd(meshVBuff[ic].tanInt2.y, tdir.y);
 	InterlockedAdd(meshVBuff[ic].tanInt2.z, tdir.z);
-
-	// altrimenti: singolo loop in un unico gruppo e thread
-	// NEIN - povera scheda video
-	//  for( int i = 0; i < numIndices; i += 3 )
-    //     {
-    //         uint ia = trianglesBuff[i];
-    //         uint ib = trianglesBuff[i+1];
-    //         uint ic = trianglesBuff[i+2];
-    //         float3 e1 = meshVBuff[ib].pos - meshVBuff[ia].pos;
-    //         float3 e2 = meshVBuff[ic].pos - meshVBuff[ia].pos;
-    //         float3 norm  = cross( e1, e2 );
-    //         meshVBuff[ia].normal += norm; //accumulate face normal in the vertices
-    //         meshVBuff[ib].normal += norm;//that are part of the face
-    //         meshVBuff[ic].normal += norm;
-    //     }
 }
 
 [numthreads(32,1,1)]
@@ -214,7 +194,7 @@ void SolveTangents (uint3 id : SV_DispatchThreadID)
 {
 	//https://forum.unity.com/threads/how-to-calculate-mesh-tangents.38984/
 	uint i = id.x;
-	float3 n = (float3) (meshVBuff[i].normalInt) / 1000000.0;
+	float3 n = (float3) (meshVBuff[i].normalInt) / 1000000.0; // INT BACK TO FLOAT
 	float3 t = (float3) (meshVBuff[i].tanInt1) / 1000000.0;
 	float3 t2 = (float3) (meshVBuff[i].tanInt2) / 1000000.0;
 

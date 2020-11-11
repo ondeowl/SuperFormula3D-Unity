@@ -128,7 +128,7 @@
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
-            float4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+            float4 c = tex2D (_MainTex, float2(IN.uv_MainTex.xy)) * _Color;
             o.Albedo = c;
             o.Emission = 0;
             o.Smoothness = _Smoothness * (1 - tex2D(_RoughnessMap, IN.uv_MainTex));

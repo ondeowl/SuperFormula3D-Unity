@@ -180,12 +180,12 @@ public class Superformula3DGPU : MonoBehaviour
         //superformula kernel dispatch
         //normals are cleared each loop before recalculation
         computeShader_SF.SetBuffer(sfKernel, "meshVBuff", meshPointsBuffer);
-        computeShader_SF.Dispatch(sfKernel, xPoints / (int)sfKThreadGSizeX + 1, yPoints / (int)sfKThreadGSizeY + 1, 1); 
+        computeShader_SF.Dispatch(sfKernel, meshPoints.Count / (int)sfKThreadGSizeX + 1,  1, 1); //yPoints / (int)sfKThreadGSizeY +
         
         //normals kernel dispatch
         computeShader_SF.SetBuffer(normalsKernel, "meshVBuff", meshPointsBuffer);
         computeShader_SF.SetBuffer(normalsKernel, "trianglesBuff", trianglesBuffer);
-        computeShader_SF.Dispatch(normalsKernel, meshTriangles.Count / (int)normKThreadGSizeX / 3 , (int)normKThreadGSizeY / 3, 1);
+        computeShader_SF.Dispatch(normalsKernel, (meshTriangles.Count / 3) / (int)normKThreadGSizeX  , (int)normKThreadGSizeY / 3, 1);
 
         //tangents kernel dispatch
         computeShader_SF.SetBuffer(tangentsKernel, "meshVBuff", meshPointsBuffer);
@@ -251,12 +251,12 @@ public class Superformula3DGPU : MonoBehaviour
         //precomputed uvs, dummy vertices and normals
         for (int i = 0; i < xPoints; i++)
         {
-            double theta = ((double)i / xPoints) *  Math.PI;
+            //double theta = ((double)i / xPoints) *  Math.PI;
             for(int k = 0; k < yPoints; k++)
             {
-                double phi = ((double)k / (yPoints-1)) *  Math.PI * 2.0;
+                //double phi = ((double)k / (yPoints-1)) *  Math.PI * 2.0;
                 MeshPoint newPoint = new MeshPoint();
-                newPoint.uv = new Vector2( (float)k / yPoints, 1f - ((float)i / xPoints) );
+                newPoint.uv = new Vector2( (float)k / (yPoints-1), 1f - ((float)i / xPoints) );
                 newPoint.pos = Vector3.zero;
                 newPoint.normalInt = Vector3Int.zero;
                 meshPoints.Add(newPoint);
@@ -278,12 +278,12 @@ public class Superformula3DGPU : MonoBehaviour
         //     meshTriangles.Add(k);
         // }
         //triangles
-        for( int i = 0; i < xPoints -1 ; i++ )
+        for( int i = 0; i < xPoints - 1 ; i++ )
         {
-            for( int k = 0; k < yPoints  ; k++ )
+            for( int k = 0; k < yPoints ; k++ )
             {
-                int current = (k + i * (yPoints)) % (meshPoints.Count-1);// % nPoints;
-                int next = (current + yPoints) % (meshPoints.Count-1);// % nPoints;
+                int current = (k + i * (yPoints)); //% (meshPoints.Count-1);// % nPoints;
+                int next = (current + yPoints);// % (meshPoints.Count-1);// % nPoints;
                 if (k != yPoints-1)
                 {
                     meshTriangles.Add(current);
@@ -302,6 +302,7 @@ public class Superformula3DGPU : MonoBehaviour
                     meshTriangles.Add(current);
                     meshTriangles.Add(next + 1);
                     meshTriangles.Add(next);
+                    
                 }
                 
             }
