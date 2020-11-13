@@ -80,7 +80,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.962
     - _GlossyReflections: 1
-    - _Metallic: 0.445
+    - _Metallic: 0.329
     - _Mode: 0
     - _NormalPower: 0
     - _NormalStrength: 0

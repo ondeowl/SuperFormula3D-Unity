@@ -106,12 +106,6 @@ public class Superformula3DGPU : MonoBehaviour
         bInit = true;
         bnds.extents = new Vector3(100,100,100);
     }
-
-    // void OnValidate()
-    // {
-    //     Debug.Log("OnValidate");
-        
-    // }
     
     void OnValidate()
     {
@@ -133,15 +127,13 @@ public class Superformula3DGPU : MonoBehaviour
                 InitializeBuffers(); //reinitialize buffers
                 bNeedsUpdate = true;
             }
-            //
-           //recalculate mesh 
-           //DispatchComputeSFMesh(); 
-        }
-        if (bNeedsUpdate)
-        {
-            //recalculate mesh 
-            DispatchComputeSFMesh();
-            bNeedsUpdate = false;    
+
+            if (bNeedsUpdate)
+            {
+                //recalculate mesh 
+                DispatchComputeSFMesh();
+                bNeedsUpdate = false;    
+            }
         }
          
         if(!bDrawWireframe)
@@ -295,13 +287,15 @@ public class Superformula3DGPU : MonoBehaviour
                     meshTriangles.Add(next);
                 }
                 else{
-                    meshTriangles.Add(current);
-                    meshTriangles.Add(current + 1);
-                    meshTriangles.Add(next + 1);
+                    
 
                     meshTriangles.Add(current);
                     meshTriangles.Add(next + 1);
                     meshTriangles.Add(next);
+
+                    meshTriangles.Add(current);
+                    meshTriangles.Add(current + 1);
+                    meshTriangles.Add(next + 1);
                     
                 }
                 

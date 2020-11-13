@@ -51,9 +51,6 @@ Thumbs.db
 /[Aa]ssets/textures/*
 /[Aa]ssets/[Ss]uperFormula_DEV/*
 /[Tt]est[Bb]uild/*
-# Asset meta data should only be ignored when the corresponding asset is also ignored 
-/[Aa]ssets/**/*.meta
-
 
 *.wav
 *.WAV
